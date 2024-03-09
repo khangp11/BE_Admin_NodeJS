@@ -43,13 +43,25 @@ const categoryController = {
     },
     Update: async (req, res) => {
         try {
-            const updatedCategory = await categoryService.update(req.params.id, req.body);
+            const id = req.body.id;
+            const name = req.body.name;
+            const status = req.body.status;
+            const updatedCategory = await categoryService.update(id, name, status);
             res.json(updatedCategory);
         } catch (error) {
             console.error("Error updating category:", error);
             res.status(500).json({ error: "Internal Server Error" });
         }
+    },
+    SearchName: async (req, res) => {
+        try {
+            const name = req.body.name;
+            const data = await categoryService.search(name);
+            res.json(data);
+        } catch (error) {
+            console.error("Error search name category", error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
     }
 };
-
 module.exports = categoryController;

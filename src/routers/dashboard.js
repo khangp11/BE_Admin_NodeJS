@@ -1,8 +1,11 @@
 const dashboardController = require('../controllers/dashboardController');
 const router = require("express").Router();
-router.get('/', dashboardController.FindAll);
-router.get('/:id', dashboardController.FindById);
-router.patch('/:id', dashboardController.Update);
-router.post('/:id', dashboardController.Create);
-router.delete('/:id', dashboardController.Delete);
+router.get('/dashboard/', dashboardController.FindAll);
+router.get('/news/', dashboardController.FindAll);
+router.get('/dashboard/:id', dashboardController.FindById);
+router.patch('/dashboard/:id', dashboardController.Update);
+router.post('/dashboard/:id', dashboardController.Create);
+router.delete('/dashboard/:id', dashboardController.Delete);
+router.get('/allnews', dashboardController.AllNews);
+router.get('/allusers', dashboardController.AllUsers);
 module.exports = router;

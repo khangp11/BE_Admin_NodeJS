@@ -21,8 +21,8 @@ app.use(
     })
 );
 app.use('/api/users', userRouter);
-app.use('/api/categories', categoryRouter);
-app.use('/api/dashboard', dashboardRouter);
+app.use('/api/category', categoryRouter);
+app.use('/api', dashboardRouter);
 app.use('/api/menu', menuRouter);
 app.use('/api/lang', langsRouter);
 

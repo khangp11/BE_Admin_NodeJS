@@ -48,6 +48,24 @@ const dashboardController = {
             console.error("Error in Update function of dashboardController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
+    },
+    AllNews: async (req, res) => {
+        try {
+            const reponse = await dashboardService.allnews();
+            res.json(reponse);
+        } catch (error) {
+            console.log("Error in AllNews");
+            res.status(500).json({ error: "Internal server error" });
+        }
+    },
+    AllUsers: async (req, res) => {
+        try {
+            const reponse = await dashboardService.allusers();
+            res.json(reponse);
+        } catch (error) {
+            console.log("Error in AllUsers");
+            res.status(500).json({ error: "Internal server error" });
+        }
     }
 };
 
