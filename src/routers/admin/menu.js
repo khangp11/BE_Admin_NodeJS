@@ -1,4 +1,4 @@
-const menuController = require('../controllers/menuController');
+const menuController = require('../../controllers/admin/menuController');
 const router = require("express").Router();
 router.get('/', menuController.FindAll);
 router.get('/:id', menuController.FindById);

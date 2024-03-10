@@ -1,4 +1,4 @@
-const categoryController = require('../controllers/categoryController');
+const categoryController = require('../../controllers/admin/categoryController');
 const router = require("express").Router();
 router.get('/', categoryController.FindAll);
 router.post('/searchname', categoryController.SearchName);

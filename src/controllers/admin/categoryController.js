@@ -1,4 +1,4 @@
-const categoryService = require('../services/categoryService');
+const categoryService = require('../../services/admin/categoryService');
 
 const categoryController = {
     FindAll: async (req, res) => {

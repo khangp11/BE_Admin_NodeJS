@@ -1,4 +1,4 @@
-const userService = require('../services/userService');
+const userService = require('../../services/admin/userService');
 
 const userController = {
     FindAll: async (req, res) => {

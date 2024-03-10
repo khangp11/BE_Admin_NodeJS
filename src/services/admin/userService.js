@@ -1,9 +1,9 @@
-const DB = require('../configs/database');
+const DB = require('../../configs/database');
 
 const userService = {
     findAll: async () => {
         try {
-            const data = await DB('user');
+            const data = await DB('users');
             return data;
         } catch (error) {
             console.error("Error in findAll:", error);
@@ -12,16 +12,25 @@ const userService = {
     },
     findById: async (id) => {
         try {
-            const data = await DB('user').where('id', id).first();
+            const data = await DB('users').where('id', id).first();
             return data;
         } catch (error) {
             console.error("Error in findById:", error);
             throw error;
         }
     },
-    create: async (data) => {
+    findByUsername: async (username) => {
         try {
-            const newData = await DB('user').insert(data);
+            const data = await DB('users').where('username', username).first();
+            return data;
+        } catch (error) {
+            console.error("Error in findByUsername:", error);
+            throw error;
+        }
+    },
+    create: async (newUserData) => {
+        try {
+            const newData = await DB('users').insert(newUserData);
             return newData;
         } catch (error) {
             console.error("Error in create:", error);
@@ -30,7 +39,7 @@ const userService = {
     },
     delete: async (id) => {
         try {
-            const result = await DB('user').where('id', id).del();
+            const result = await DB('users').where('id', id).del();
             return result;
         } catch (error) {
             console.error("Error in delete:", error);
@@ -39,7 +48,7 @@ const userService = {
     },
     update: async (id, data) => {
         try {
-            const updatedData = await DB('user').where('id', id).update(data, { returning: true });
+            const updatedData = await DB('users').where('id', id).update(data, { returning: true });
             return updatedData[0];
         } catch (error) {
             console.error("Error in update:", error);

@@ -1,4 +1,4 @@
-const DB = require('../configs/database');
+const DB = require('../../configs/database');
 
 const dashboardService = {
     findAll: async (request) => {

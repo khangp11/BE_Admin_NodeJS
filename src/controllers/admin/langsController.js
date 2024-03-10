@@ -1,4 +1,4 @@
-const langsService = require('../services/langsService');
+const langsService = require('../../services/admin/langsService');
 
 const langsController = {
     FindAll: async (req, res) => {

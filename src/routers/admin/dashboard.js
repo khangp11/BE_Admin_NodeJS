@@ -1,4 +1,4 @@
-const dashboardController = require('../controllers/dashboardController');
+const dashboardController = require('../../controllers/admin/dashboardController');
 const router = require("express").Router();
 router.get('/dashboard/', dashboardController.FindAll);
 router.get('/news/', dashboardController.FindAll);

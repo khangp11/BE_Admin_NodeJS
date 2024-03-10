@@ -1,4 +1,4 @@
-const menuService = require('../services/menuService');
+const menuService = require('../../services/admin/menuService');
 
 const menuController = {
     FindAll: async (req, res) => {

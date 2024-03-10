@@ -1,4 +1,4 @@
-const langsController = require('../controllers/langsController');
+const langsController = require('../../controllers/admin/langsController');
 const router = require("express").Router();
 router.get('/', langsController.FindAll);
 router.get('/:id', langsController.FindById);

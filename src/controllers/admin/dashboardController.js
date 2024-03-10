@@ -1,4 +1,4 @@
-const dashboardService = require('../services/dashboardService');
+const dashboardService = require('../../services/admin/dashboardService');
 
 const dashboardController = {
     FindAll: async (req, res) => {
