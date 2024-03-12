@@ -12,7 +12,8 @@ const menuController = {
     },
     FindById: async (req, res) => {
         try {
-            const menu = await menuService.findById(req.params.id);
+            const id = req.params.id;
+            const menu = await menuService.findById(id);
             if (!menu) {
                 return res.status(404).json({ error: 'Menu not found' });
             }
@@ -24,7 +25,9 @@ const menuController = {
     },
     Create: async (req, res) => {
         try {
-            const newMenu = await menuService.create(req.body);
+            const data = req.body;
+            console.log(data);
+            const newMenu = await menuService.create(data);
             res.status(201).json(newMenu);
         } catch (error) {
             console.error("Error in Create function of menuController:", error);
@@ -33,7 +36,8 @@ const menuController = {
     },
     Delete: async (req, res) => {
         try {
-            const result = await menuService.delete(req.params.id);
+            const id = req.params.id;
+            const result = await menuService.delete(id);
             res.status(204).send();
         } catch (error) {
             console.error("Error in Delete function of menuController:", error);
@@ -42,7 +46,9 @@ const menuController = {
     },
     Update: async (req, res) => {
         try {
-            const updatedMenu = await menuService.update(req.params.id, req.body);
+            const id = req.params.id;
+            const data = req.body;
+            const updatedMenu = await menuService.update(id, data);
             res.json(updatedMenu);
         } catch (error) {
             console.error("Error in Update function of menuController:", error);

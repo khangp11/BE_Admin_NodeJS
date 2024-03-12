@@ -1,45 +1,45 @@
-const userService = require('../../services/admin/userService');
+const slideShowService = require('../../services/admin/slideShowService');
 
-const userController = {
+const slideShowController = {
     FindAll: async (req, res) => {
         try {
-            const users = await userService.findAll();
-            res.json(users);
+            const slideShow = await slideShowService.findAll();
+            res.json(slideShow);
         } catch (error) {
-            console.error("Error in FindAll function of userController:", error);
+            console.error("Error in FindAll function of slideShowController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
     },
     FindById: async (req, res) => {
         try {
             const id = req.params.id;
-            const user = await userService.findById(id);
-            if (!user) {
+            const slideShow = await slideShowService.findById(id);
+            if (!slideShow) {
                 return res.status(404).json({ error: 'User not found' });
             }
             res.json(user);
         } catch (error) {
-            console.error("Error in FindById function of userController:", error);
+            console.error("Error in FindById function of slideShowController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
     },
     Create: async (req, res) => {
         try {
             const data = req.body;
-            const newUser = await userService.create(data);
-            res.status(201).json(newUser);
+            const newSlideShow = await slideShowService.create(data);
+            res.status(201).json(newSlideShow);
         } catch (error) {
-            console.error("Error in Create function of userController:", error);
+            console.error("Error in Create function of slideShowController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
     },
     Delete: async (req, res) => {
         try {
             const id = req.params.id;
-            const result = await userService.delete(id);
+            const result = await slideShowService.delete(id);
             res.status(204).send();
         } catch (error) {
-            console.error("Error in Delete function of userController:", error);
+            console.error("Error in Delete function of slideShowController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
     },
@@ -47,13 +47,13 @@ const userController = {
         try {
             const id = req.params.id;
             const data = req.body;
-            const updatedUser = await userService.update(id, data);
-            res.json(updatedUser);
+            const updatedSlideShow = await slideShowService.update(id, data);
+            res.json(updatedSlideShow);
         } catch (error) {
-            console.error("Error in Update function of userController:", error);
+            console.error("Error in Update function of slideShowController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
     }
 };
 
-module.exports = userController;
+module.exports = slideShowController;

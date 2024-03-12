@@ -11,8 +11,9 @@ const authController = {
     registerUser: async (req, res) => {
         try {
             const fullname = req.body.fullname;
+            const password = req.body.password;
             const salt = await bcrypt.genSalt(10);
-            const hashed = await bcrypt.hash(req.body.password, salt);
+            const hashed = await bcrypt.hash(password, salt);
             const username = req.body.username;
             const gender = req.body.gender;
             const email = req.body.email;
@@ -33,12 +34,11 @@ const authController = {
                 confirmed: 0,
                 created_at: currentDate,
                 updated_at: currentDate,
-
             };
             const results = await userController.Create(newUserData);
             return res.json(results);
         } catch (error) {
-            console.log(error);
+            console.error("Error in registerUser function of authController :", error);
             res.json({ error: 1, msg: error });
         }
     },
@@ -49,9 +49,10 @@ const authController = {
             if (!user) {
                 return res.status(404).json("Không có tên người dùng");
             }
+            const password = req.body.password;
             const validPassword = await bcrypt.compare(
-                req.body.password,
-                user.password
+                password,
+                user.data.password
             );
             if (!validPassword) {
                 return res.status(404).json("Mật khẩu không hợp lệ");
@@ -69,16 +70,17 @@ const authController = {
                 const { password, ...others } = user;
                 res.status(200).json({ ...others, accessToken, refreshToken });
             }
-        } catch (err) {
-            res.status(500).json(err);
+        } catch (error) {
+            console.error("Error in login function of authController :", error);
+            res.status(500).json(error);
         }
     },
     generateAccessToken: (user) => {
         return jwt.sign(
             {
-                id: user.id,
-                role_id: user.role_id,
-                username: user.username,
+                id: user.data.id,
+                role_id: user.data.role_id,
+                username: user.data.username,
             },
             process.env.JWT_ACCESS_KEY,
             { expiresIn: "10s" }
@@ -87,9 +89,9 @@ const authController = {
     generateRefreshToken: (user) => {
         return jwt.sign(
             {
-                id: user.id,
-                role_id: user.role_id,
-                username: user.username,
+                id: user.data.id,
+                role_id: user.data.role_id,
+                username: user.data.username,
             },
             process.env.JWT_REFRESH_KEY,
             { expiresIn: "100d" }

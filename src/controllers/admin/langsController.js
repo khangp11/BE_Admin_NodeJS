@@ -42,7 +42,9 @@ const langsController = {
     },
     Update: async (req, res) => {
         try {
-            const updatedLang = await langsService.update(req.params.id, req.body);
+            const id = req.params.id;
+            const data = req.body;
+            const updatedLang = await langsService.update(id, data);
             res.json(updatedLang);
         } catch (error) {
             console.error("Error in Update function of langsController:", error);

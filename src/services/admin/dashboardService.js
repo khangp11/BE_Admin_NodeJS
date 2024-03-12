@@ -1,5 +1,5 @@
 const DB = require('../../configs/database');
-
+const currentDate = new Date();
 const dashboardService = {
     findAll: async (request) => {
         try {
@@ -42,8 +42,48 @@ const dashboardService = {
     },
     create: async (data) => {
         try {
-            const newData = await DB('news').insert(data);
-            return newData;
+            const newData = {
+                company_id: data.company_id,
+                image: data.image,
+                status: data.status,
+                user_id: data.user_id,
+                view: data.view,
+                tags: data.tags,
+                icons: data.icons,
+                sort_order: data.sort_order,
+                object_type: data.object_type,
+                file: data.file,
+                updated_at: currentDate,
+                created_at: currentDate
+            }
+            const news = await DB('news').insert(newData).returning("id");
+            const newsID = news[0];
+
+            const dataCat = data.obj_cat;
+            for (let item of dataCat) {
+                const catData = {
+                    company_id: data.company_id,
+                    news_id: newsID,
+                    cat_id: item.cat_id
+                };
+                const news_cat = await DB('news_categories').insert(catData).returning('*');
+            }
+
+            const new_lang = data.obj_news_lang;
+            for (let item of new_lang) {
+                const new_lang_Data = {
+                    company_id: item.company_id,
+                    news_id: newsID,
+                    lang_id: item.lang_id,
+                    name: item.name,
+                    description: item.description,
+                    content: item.content,
+                    meta_title: item.meta_title,
+                    meta_keywords: item.meta_keywords,
+                    meta_description: item.meta_description
+                };
+                const news_lang = await DB('news_lang').insert(new_lang_Data).returning('*');
+            }
         } catch (error) {
             console.error("Error in create function of dashboardService:", error);
             throw error;
@@ -51,8 +91,9 @@ const dashboardService = {
     },
     delete: async (id) => {
         try {
-            const result = await DB('news').where('id', id).del();
-            return result;
+            const result1 = await DB('news').where('id', id).del();
+            const result2 = await DB("news_categories").where('news_id', id).del();
+            const result3 = await DB("news_lang").where('news_id', id).del();
         } catch (error) {
             console.error("Error in delete function of dashboardService:", error);
             throw error;
@@ -60,13 +101,102 @@ const dashboardService = {
     },
     update: async (id, data) => {
         try {
-            const updatedData = await DB('news').where('id', id).update(data, { returning: true });
-            return updatedData[0];
+            const news_Data = {
+                company_id: data.company_id,
+                image: data.image,
+                status: data.status,
+                user_id: data.user_id,
+                view: data.view,
+                tags: data.tags,
+                icons: data.icons,
+                sort_order: data.sort_order,
+                object_type: data.object_type,
+                file: data.file,
+                updated_at: currentDate
+            }
+            const news = await DB('news').where('id', id).update(news_Data);
+            const news_cat = data.obj_cat;
+            for (let item of news_cat) {
+                let exitNewsCat = await DB('news_categories').where({ news_id: id, cat_id: item.cat_id }).first();
+                const newsCat = {
+                    company_id: data.company_id,
+                    news_id: id,
+                    cat_id: item.cat_id
+                };
+                if (exitNewsCat != null) {
+                    const result = await DB('news_categories').where({ id: exitNewsCat.id }).update(newsCat);
+                } else {
+                    const result = await DB('news_categories').insert(newsCat);
+                }
+            }
+            const news_lang = data.obj_news_lang;
+            for (let item of news_lang) {
+                let exitNewsLang = await DB('news_lang').where({ news_id: id, lang_id: item.lang_id }).first();
+                const newslang = {
+                    company_id: item.company_id,
+                    news_id: id,
+                    lang_id: item.lang_id,
+                    name: item.name,
+                    description: item.description,
+                    content: item.content,
+                    meta_title: item.meta_title,
+                    meta_keywords: item.meta_keywords,
+                    meta_description: item.meta_description
+                };
+                if (exitNewsLang != null) {
+                    const result = await DB('news_lang').where({ id: exitNewsLang.id }).update(newslang);
+                } else {
+                    const result = await DB('news_lang').insert(newslang);
+                }
+            }
         } catch (error) {
             console.error("Error in update function of dashboardService:", error);
             throw error;
         }
     },
+    search: async (name, status, cat_id) => {
+        try {
+            let query = DB("news")
+                .select("news.*")
+                .leftJoin("news_lang", "news.id", "news_lang.news_id")
+                .leftJoin("news_categories", "news.id", "news_categories.news_id");
+            if (name) {
+                query = query.where("news_lang.name", name);
+            }
+            if (status !== undefined) {
+                query = query.andWhere("news.status", status);
+            }
+            if (cat_id !== undefined) {
+                query = query.andWhere("news_categories.cat_id", cat_id);
+            }
+            const result = await query;
+            return result;
+        } catch (error) {
+            console.error("Lỗi khi tìm kiếm:", error);
+            throw error;
+        }
+    },
+    calculateTotalPosts: async (req, res) => {
+        try {
+            const posts = await DB("news");
+
+            let totalDisplayPosts = 0;
+            let totalDraftPosts = 0;
+
+            for (const post of posts) {
+                if (post.status === 1) {
+                    totalDisplayPosts++;
+                } else if (post.status === 0) {
+                    totalDraftPosts++;
+                }
+            }
+            return { totalDisplayPosts, totalDraftPosts };
+        } catch (error) {
+            console.error("Lỗi khi tính tổng số bài viết:", error);
+            res.status(500).json({ error: "Đã xảy ra lỗi khi tính tổng số bài viết" });
+        }
+    },
+
     allnews: async (req, rep) => {
         try {
             const reponse = await DB("news").count('* as total');
@@ -74,7 +204,7 @@ const dashboardService = {
                 data: reponse[0].total
             }
         } catch (error) {
-            console.error("Error in update function of dashboardService:", error);
+            console.error("Error in allnews function of dashboardService:", error);
             throw error;
         }
     },
@@ -85,10 +215,9 @@ const dashboardService = {
                 data: reponse[0].total
             }
         } catch (error) {
-            console.error("Error in update function of dashboardService:", error);
+            console.error("Error in allUsers function of dashboardService:", error);
             throw error;
         }
     }
 };
-
 module.exports = dashboardService;

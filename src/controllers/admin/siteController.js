@@ -1,45 +1,45 @@
-const userService = require('../../services/admin/userService');
+const siteService = require('../../services/admin/siteService');
 
-const userController = {
+const siteController = {
     FindAll: async (req, res) => {
         try {
-            const users = await userService.findAll();
-            res.json(users);
+            const site = await siteService.findAll();
+            res.json(site);
         } catch (error) {
-            console.error("Error in FindAll function of userController:", error);
+            console.error("Error in FindAll function of siteController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
     },
     FindById: async (req, res) => {
         try {
             const id = req.params.id;
-            const user = await userService.findById(id);
-            if (!user) {
-                return res.status(404).json({ error: 'User not found' });
+            const site = await siteService.findById(id);
+            if (!site) {
+                return res.status(404).json({ error: 'site not found' });
             }
-            res.json(user);
+            res.json(site);
         } catch (error) {
-            console.error("Error in FindById function of userController:", error);
+            console.error("Error in FindById function of siteController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
     },
     Create: async (req, res) => {
         try {
             const data = req.body;
-            const newUser = await userService.create(data);
-            res.status(201).json(newUser);
+            const newsite = await siteService.create(data);
+            res.status(201).json(newsite);
         } catch (error) {
-            console.error("Error in Create function of userController:", error);
+            console.error("Error in Create function of siteController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
     },
     Delete: async (req, res) => {
         try {
             const id = req.params.id;
-            const result = await userService.delete(id);
+            const result = await siteService.delete(id);
             res.status(204).send();
         } catch (error) {
-            console.error("Error in Delete function of userController:", error);
+            console.error("Error in Delete function of siteController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
     },
@@ -47,8 +47,8 @@ const userController = {
         try {
             const id = req.params.id;
             const data = req.body;
-            const updatedUser = await userService.update(id, data);
-            res.json(updatedUser);
+            const updatedSite = await siteService.update(id, data);
+            res.json(updatedSite);
         } catch (error) {
             console.error("Error in Update function of userController:", error);
             res.status(500).json({ error: 'Internal server error' });
@@ -56,4 +56,4 @@ const userController = {
     }
 };
 
-module.exports = userController;
+module.exports = siteController;

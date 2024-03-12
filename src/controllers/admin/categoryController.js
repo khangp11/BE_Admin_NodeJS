@@ -43,10 +43,9 @@ const categoryController = {
     },
     Update: async (req, res) => {
         try {
-            const id = req.body.id;
-            const name = req.body.name;
-            const status = req.body.status;
-            const updatedCategory = await categoryService.update(id, name, status);
+            const id = req.params.id;
+            const categoryData = req.body;
+            const updatedCategory = await categoryService.update(id, categoryData);
             res.json(updatedCategory);
         } catch (error) {
             console.error("Error updating category:", error);
@@ -56,7 +55,8 @@ const categoryController = {
     SearchName: async (req, res) => {
         try {
             const name = req.body.name;
-            const data = await categoryService.search(name);
+            const status = req.body.status;
+            const data = await categoryService.search(name, status);
             res.json(data);
         } catch (error) {
             console.error("Error search name category", error);

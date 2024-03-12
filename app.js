@@ -11,6 +11,8 @@ const categoryRouter = require("./src/routers/admin/category");
 const dashboardRouter = require("./src/routers/admin/dashboard");
 const menuRouter = require("./src/routers/admin/menu");
 const langsRouter = require("./src/routers/admin/langs");
+const siteRouter = require("./src/routers/admin/site");
+const slideShowRouter = require("./src/routers/admin/slideShow");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,6 +29,8 @@ app.use('/api/category', categoryRouter);
 app.use('/api', dashboardRouter);
 app.use('/api/menu', menuRouter);
 app.use('/api/lang', langsRouter);
+app.use('/api/site', siteRouter);
+app.use('/api/slide', slideShowRouter);
 
 
 app.listen(port, hostname, () => {
