@@ -44,15 +44,15 @@ const authController = {
     },
     loginUser: async (req, res) => {
         try {
-            const username = req.body.username;
-            const user = await userController.FindByUsername(username);
+            const email = req.body.email;
+            const user = await userController.FindByUsername(email);
             if (!user) {
                 return res.status(404).json("Không có tên người dùng");
             }
             const password = req.body.password;
             const validPassword = await bcrypt.compare(
                 password,
-                user.data.password
+                user.password
             );
             if (!validPassword) {
                 return res.status(404).json("Mật khẩu không hợp lệ");
@@ -78,20 +78,22 @@ const authController = {
     generateAccessToken: (user) => {
         return jwt.sign(
             {
-                id: user.data.id,
-                role_id: user.data.role_id,
-                username: user.data.username,
+                id: user.id,
+                role_id: user.role_id,
+                username: user.username,
+                company_id: user.company_id
             },
             process.env.JWT_ACCESS_KEY,
-            { expiresIn: "10s" }
+            { expiresIn: "1d" }
         );
     },
     generateRefreshToken: (user) => {
         return jwt.sign(
             {
-                id: user.data.id,
-                role_id: user.data.role_id,
-                username: user.data.username,
+                id: user.id,
+                role_id: user.role_id,
+                username: user.username,
+                company_id: user.company_id
             },
             process.env.JWT_REFRESH_KEY,
             { expiresIn: "100d" }

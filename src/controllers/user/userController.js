@@ -18,9 +18,9 @@ const userController = {
             res.status(500).json({ error: 'Internal server error' });
         }
     },
-    FindByUsername: async (username) => {
+    FindByUsername: async (email) => {
         try {
-            const user = await userService.findByUsername(username);
+            const user = await userService.findByUsername(email);
             return user;
         } catch (error) {
             console.error("Error in findByUsername function of userController:", error);

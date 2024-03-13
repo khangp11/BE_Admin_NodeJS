@@ -8,11 +8,7 @@ const categoryService = {
                 .join('categories_lang', 'categories.id', '=', 'categories_lang.cat_id')
                 .where('categories_lang.lang_id', VIETNAMESE_LANG_ID)
                 .select('categories.id', 'categories.company_id', 'categories.parent_id', 'categories.image', 'categories.status', 'categories.sort_order', 'categories.updated_at', 'categories.created_at', 'categories.file', 'categories_lang.name as name');
-            if (categories.length > 0) {
-                return { success: true, message: "Danh sách danh mục đã được tìm thấy.", data: categories };
-            } else {
-                return { success: false, message: "Không tìm thấy danh mục nào." };
-            }
+            return categories;
         } catch (error) {
             console.error('Error fetching Vietnamese news categories:', error);
             return [];
@@ -27,11 +23,7 @@ const categoryService = {
                 .where('categories.id', ID)
                 .select('categories.id', 'categories.company_id', 'categories.parent_id', 'categories.image', 'categories.status', 'categories.sort_order', 'categories.updated_at', 'categories.created_at', 'categories.file', 'categories_lang.name as name')
                 .first();
-            if (category) {
-                return { success: true, message: "Danh mục đã được tìm thấy.", data: category };
-            } else {
-                return { success: false, message: "Không tìm thấy danh mục với ID đã cho." };
-            }
+            return category;
         } catch (error) {
             console.error('Error fetching Vietnamese news category by ID:', error);
             throw error;
@@ -67,7 +59,8 @@ const categoryService = {
             return { success: true, message: "Danh mục đã được tạo thành công." };
         } catch (error) {
             console.error("Error in create function of categoryService:", error);
-            return { success: false, message: "Đã xảy ra lỗi khi tạo danh mục." };
+            throw error;
+
         }
     },
     delete: async (id) => {
@@ -78,14 +71,9 @@ const categoryService = {
             }
             const result1 = await DB('categories').where({ id }).del();
             const result2 = await DB('categories_lang').where({ cat_id: id }).del();
-            if (result1 && result2) {
-                return { status: 200, body: { success: true, message: "Danh mục đã được xóa thành công." } };
-            } else {
-                return { status: 500, body: { success: false, message: "Không thể xóa danh mục." } };
-            }
         } catch (error) {
             console.error("Error in delete function of categoryService:", error);
-            return { status: 500, body: { success: false, message: "Đã xảy ra lỗi khi xóa danh mục." } };
+            throw error;
         }
     },
     update: async (id, categoryData) => {

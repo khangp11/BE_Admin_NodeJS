@@ -4,11 +4,7 @@ const menuService = {
     findAll: async () => {
         try {
             const data = await DB('menu_type');
-            if (data.length > 0) {
-                return { success: true, message: "Danh sách các loại menu đã được tìm thấy.", data: data };
-            } else {
-                return { success: false, message: "Không tìm thấy bất kỳ loại menu nào." };
-            }
+            return data;
         } catch (error) {
             console.error("Error in findAll:", error);
             throw error;
@@ -17,11 +13,7 @@ const menuService = {
     findById: async (id) => {
         try {
             const data = await DB('menu_type').where('id', id).first();
-            if (data) {
-                return { success: true, message: "Loại menu đã được tìm thấy.", data: data };
-            } else {
-                return { success: false, message: "Không tìm thấy loại menu với ID đã cho." };
-            }
+            return data;
         } catch (error) {
             console.error("Error in findById:", error);
             throw error;

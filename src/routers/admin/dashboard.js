@@ -9,7 +9,7 @@ router.delete('/news/:id', dashboardController.Delete);
 router.post('/news/search', dashboardController.Search);
 router.post('/news/totalpost/', dashboardController.CalculateTotalPosts);
 // thống kê
-router.get('/news/allnews', dashboardController.AllNews);
-router.get('/news/allusers', dashboardController.AllUsers);
+router.get('/allnews/', dashboardController.AllNews);
+router.get('/allusers/', dashboardController.AllUsers);
 
 module.exports = router;
