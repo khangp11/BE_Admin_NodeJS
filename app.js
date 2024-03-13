@@ -17,6 +17,7 @@ const slideShowRouter = require("./src/routers/admin/slideShow");
 const checkPermission = require("./src/Middleware/permissionsMiddleware");
 
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -28,7 +29,7 @@ app.use(
 
 app.use('/api/', authRouter);
 app.use('/api/users', checkPermission('1'), userRouter);
-app.use('/api/category', checkPermission('1'), categoryRouter);
+app.use('/api/category', categoryRouter);
 app.use('/api', dashboardRouter);
 app.use('/api/menu', menuRouter);
 app.use('/api/lang', langsRouter);

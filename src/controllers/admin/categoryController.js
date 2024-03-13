@@ -1,4 +1,5 @@
 const categoryService = require('../../services/admin/categoryService');
+const currentDate = new Date();
 
 const categoryController = {
     FindAll: async (req, res) => {
@@ -25,7 +26,41 @@ const categoryController = {
     },
     Create: async (req, res) => {
         try {
-            const newCategory = await categoryService.create(req.body);
+            const companyId = req.companyInfo;
+            const company_id = companyId;
+            const name = req.body.name;
+            const description = req.body.description;
+            const name_en = req.body.name_en;
+            const description_en = req.body.description_en;
+            const parent_id = req.body.parent_id;
+
+            const status = req.body.status ? 1 : 0;
+
+            const sort_order = req.body.sort_order;
+            const file = req.body.file || "";
+            const image = req.body.image;
+
+            const categoryData = {
+                company_id: company_id,
+                parent_id: parent_id,
+                image: image,
+                status: status,
+                sort_order: sort_order,
+                file: file,
+                obj_lang: [
+                    {
+                        lang_id: 1,
+                        name: name,
+                        description: description,
+                    },
+                    {
+                        lang_id: 2,
+                        name: name_en,
+                        description: description_en,
+                    }
+                ]
+            };
+            const newCategory = await categoryService.create(categoryData);
             res.status(201).json(newCategory);
         } catch (error) {
             console.error("Error creating category:", error);
@@ -44,7 +79,38 @@ const categoryController = {
     Update: async (req, res) => {
         try {
             const id = req.params.id;
-            const categoryData = req.body;
+            const companyId = req.companyInfo;
+            const company_id = companyId;
+            const name = req.body.name;
+            const description = req.body.description;
+            const name_en = req.body.name_en;
+            const description_en = req.body.description_en;
+            const parent_id = req.body.parent_id;
+            const status = req.body.status ? 1 : 0;
+            const sort_order = req.body.sort_order;
+            const file = req.body.file || "";
+            const image = req.body.image;
+
+            const categoryData = {
+                company_id: company_id,
+                parent_id: parent_id,
+                image: image,
+                status: status,
+                sort_order: sort_order,
+                file: file,
+                obj_lang: [
+                    {
+                        lang_id: 1,
+                        name: name,
+                        description: description,
+                    },
+                    {
+                        lang_id: 2,
+                        name: name_en,
+                        description: description_en,
+                    }
+                ]
+            };
             const updatedCategory = await categoryService.update(id, categoryData);
             res.json(updatedCategory);
         } catch (error) {

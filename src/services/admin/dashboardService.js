@@ -33,8 +33,54 @@ const dashboardService = {
     },
     findById: async (id) => {
         try {
-            const data = await DB('news').where('id', id).first();
-            return data;
+            const data = await DB('news')
+                .where('news.id', id)
+                .innerJoin('news_lang as nl_vn', function () {
+                    this.on('news.id', '=', 'nl_vn.news_id').andOn('nl_vn.lang_id', '=', 1);
+                })
+                .innerJoin('news_lang as nl_en', function () {
+                    this.on('news.id', '=', 'nl_en.news_id').andOn('nl_en.lang_id', '=', 2);
+                })
+                .innerJoin('news_categories', 'news.id', '=', 'news_categories.news_id')
+                .leftJoin('categories_lang', function () {
+                    this.on('news_categories.cat_id', '=', 'categories_lang.cat_id')
+                        .andOn('categories_lang.lang_id', '=', 1);
+                })
+                .select(
+                    'news.id',
+                    'news.image',
+                    'news.status',
+                    'news.sort_order',
+                    DB.raw('MAX(nl_vn.name) as name_vn'),
+                    DB.raw('MAX(nl_vn.description) as description_vn'),
+                    DB.raw('MAX(nl_vn.content) as content_vn'),
+                    DB.raw('MAX(nl_vn.meta_description) as meta_description_vn'),
+                    DB.raw('MAX(nl_en.name) as name_en'),
+                    DB.raw('MAX(nl_en.description) as description_en'),
+                    DB.raw('MAX(nl_en.content) as content_en'),
+                    DB.raw('MAX(nl_en.meta_description) as meta_description_en'),
+                    DB.raw('GROUP_CONCAT(DISTINCT news_categories.cat_id) as category_id'),
+                    DB.raw('GROUP_CONCAT(DISTINCT categories_lang.name) as name_category')
+                )
+                .groupBy('news.id')
+                .first();
+
+            return {
+                id: data.id,
+                image: data.image,
+                status: data.status,
+                sort_order: data.sort_order,
+                name: data.name_vn,
+                description: data.description_vn,
+                content: data.content_vn,
+                meta_description_vn: data.meta_description_vn,
+                name_en: data.name_en,
+                description_en: data.description_en,
+                content_en: data.content_en,
+                meta_description_en: data.meta_description_en,
+                category_id: data.category_id,
+                name_category: data.name_category
+            };
         } catch (error) {
             console.error("Error in findById function of dashboardService:", error);
             throw error;
@@ -57,9 +103,11 @@ const dashboardService = {
                 created_at: currentDate
             }
             const news = await DB('news').insert(newData).returning("id");
+
             const newsID = news[0];
 
             const dataCat = data.obj_cat;
+
             for (let item of dataCat) {
                 const catData = {
                     company_id: data.company_id,
@@ -70,6 +118,7 @@ const dashboardService = {
             }
 
             const new_lang = data.obj_news_lang;
+
             for (let item of new_lang) {
                 const new_lang_Data = {
                     company_id: item.company_id,

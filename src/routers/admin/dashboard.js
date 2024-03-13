@@ -1,5 +1,11 @@
 const dashboardController = require('../../controllers/admin/dashboardController');
 const router = require("express").Router();
+
+const checkPermission = require("../../Middleware/permissionsMiddleware");
+
+router.use(checkPermission('1'));
+
+
 router.get('/dashboard/', dashboardController.FindAll);
 router.get('/news/', dashboardController.FindAll);
 router.get('/news/:id', dashboardController.FindById);

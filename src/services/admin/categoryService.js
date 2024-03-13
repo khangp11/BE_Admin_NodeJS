@@ -2,33 +2,92 @@ const DB = require('../../configs/database');
 const currentDate = new Date();
 const categoryService = {
     findAll: async () => {
-        const VIETNAMESE_LANG_ID = 1;
         try {
             const categories = await DB('categories')
                 .join('categories_lang', 'categories.id', '=', 'categories_lang.cat_id')
-                .where('categories_lang.lang_id', VIETNAMESE_LANG_ID)
-                .select('categories.id', 'categories.company_id', 'categories.parent_id', 'categories.image', 'categories.status', 'categories.sort_order', 'categories.updated_at', 'categories.created_at', 'categories.file', 'categories_lang.name as name');
-            return categories;
+                .whereIn('categories_lang.lang_id', [1, 2]) // Chỉ lấy dữ liệu cho hai ngôn ngữ: tiếng Việt (1) và tiếng Anh (2)
+                .select(
+                    'categories.id',
+                    'categories.parent_id',
+                    'categories.image',
+                    'categories.status',
+                    'categories.sort_order',
+                    'categories.updated_at',
+                    'categories.created_at',
+                    'categories.file',
+                    DB.raw('MAX(CASE WHEN categories_lang.lang_id = 1 THEN categories_lang.name END) AS name_vn'),
+                    DB.raw('MAX(CASE WHEN categories_lang.lang_id = 1 THEN categories_lang.description END) AS description_vn'),
+                    DB.raw('MAX(CASE WHEN categories_lang.lang_id = 2 THEN categories_lang.name END) AS name_en'),
+                    DB.raw('MAX(CASE WHEN categories_lang.lang_id = 2 THEN categories_lang.description END) AS description_en')
+                )
+                .groupBy('categories.id');
+
+            return categories.map(category => ({
+                id: category.id,
+                parent_id: category.parent_id,
+                image: category.image,
+                status: category.status,
+                sort_order: category.sort_order,
+                updated_at: category.updated_at,
+                created_at: category.created_at,
+                file: category.file,
+                name: category.name_vn,
+                description: category.description_vn,
+                name_en: category.name_en,
+                description_en: category.description_en
+            }));
         } catch (error) {
             console.error('Error fetching Vietnamese news categories:', error);
             return [];
         }
     },
+
     findById: async (ID) => {
-        const VIETNAMESE_LANG_ID = 1;
         try {
             const category = await DB('categories')
-                .join('categories_lang', 'categories.id', '=', 'categories_lang.cat_id')
-                .where('categories_lang.lang_id', VIETNAMESE_LANG_ID)
+                .join('categories_lang as cl_vn', function () {
+                    this.on('categories.id', '=', 'cl_vn.cat_id').andOn('cl_vn.lang_id', '=', 1);
+                })
+                .join('categories_lang as cl_en', function () {
+                    this.on('categories.id', '=', 'cl_en.cat_id').andOn('cl_en.lang_id', '=', 2);
+                })
                 .where('categories.id', ID)
-                .select('categories.id', 'categories.company_id', 'categories.parent_id', 'categories.image', 'categories.status', 'categories.sort_order', 'categories.updated_at', 'categories.created_at', 'categories.file', 'categories_lang.name as name')
+                .select(
+                    'categories.id',
+                    'categories.parent_id',
+                    'categories.image',
+                    'categories.status',
+                    'categories.sort_order',
+                    'categories.updated_at',
+                    'categories.created_at',
+                    'categories.file',
+                    'cl_vn.name as name_vn',
+                    'cl_vn.description as description_vn',
+                    'cl_en.name as name_en',
+                    'cl_en.description as description_en'
+                )
                 .first();
-            return category;
+
+            return {
+                id: category.id,
+                parent_id: category.parent_id,
+                image: category.image,
+                status: category.status,
+                sort_order: category.sort_order,
+                updated_at: category.updated_at,
+                created_at: category.created_at,
+                file: category.file,
+                name: category.name_vn,
+                description: category.description_vn,
+                name_en: category.name_en,
+                description_en: category.description_en
+            };
         } catch (error) {
-            console.error('Error fetching Vietnamese news category by ID:', error);
+            console.error('Error fetching news category by ID:', error);
             throw error;
         }
     },
+
     create: async (categoryData) => {
         try {
             const categoriesData = {
