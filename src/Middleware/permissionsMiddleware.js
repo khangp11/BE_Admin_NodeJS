@@ -4,6 +4,7 @@ require("dotenv").config();
 const checkPermission = (requiredPermission) => {
     return (req, res, next) => {
         const token = req.headers.token;
+
         if (!token) {
             return res.status(401).json({ message: 'ko có token.' });
         }

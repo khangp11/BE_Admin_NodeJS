@@ -1,5 +1,6 @@
 const dashboardService = require('../../services/admin/dashboardService');
 
+
 const dashboardController = {
     FindAll: async (req, res) => {
         try {
@@ -105,7 +106,66 @@ const dashboardController = {
     Update: async (req, res) => {
         try {
             const id = req.params.id;
-            const data = req.body;
+
+            const companyId = req.companyInfo;
+            const company_id = companyId;
+            const image = req.body.image;
+            const status = req.body.status;
+            const user_id = req.user_id;
+            const view = req.body.view ? null : undefined;
+            const tags = req.body.tags || "";
+            const icons = req.body.icons || "";
+            const sort_order = req.body.sort_order ? null : 1;
+            const object_type = req.body.object_type ? null : undefined;
+            const file = req.body.file || "";
+            //category
+            const dataCat = req.body.category_id;
+            //news_lang
+            const name_en = req.body.name_en;
+            const content_en = req.body.content_en;
+            const description_en = req.body.description_en;
+            const name = req.body.name;
+            const content = req.body.content;
+            const description = req.body.description;
+
+
+            const data = {
+                company_id: company_id,
+                image: image,
+                status: status,
+                user_id: user_id,
+                view: view,
+                tags: tags,
+                icons: icons,
+                sort_order: sort_order,
+                object_type: object_type,
+                file: file,
+                obj_cat: [],
+                obj_news_lang: [
+                    {
+                        lang_id: 2,
+                        name: name_en,
+                        content: content_en,
+                        description: description_en
+                    },
+                    {
+                        lang_id: 1,
+                        name: name,
+                        content: content,
+                        description: description
+                    }
+                ]
+            }
+            if (Array.isArray(dataCat)) {
+                dataCat.forEach(cat_id => {
+                    data.obj_cat.push({ "cat_id": cat_id });
+                });
+            } else {
+                const catIds = dataCat.split(',').map(id => id.trim());
+                catIds.forEach(cat_id => {
+                    data.obj_cat.push({ "cat_id": cat_id });
+                });
+            }
             const updatedDashboard = await dashboardService.update(id, data);
             res.json(updatedDashboard);
         } catch (error) {

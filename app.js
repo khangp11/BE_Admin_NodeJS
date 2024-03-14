@@ -13,6 +13,7 @@ const menuRouter = require("./src/routers/admin/menu");
 const langsRouter = require("./src/routers/admin/langs");
 const siteRouter = require("./src/routers/admin/site");
 const slideShowRouter = require("./src/routers/admin/slideShow");
+const uploadRouter = require("./src/routers/upload");
 
 const checkPermission = require("./src/Middleware/permissionsMiddleware");
 
@@ -35,6 +36,7 @@ app.use('/api/menu', menuRouter);
 app.use('/api/lang', langsRouter);
 app.use('/api/site', siteRouter);
 app.use('/api/slide', slideShowRouter);
+app.use('/api/media', uploadRouter);
 
 
 app.listen(port, hostname, () => {

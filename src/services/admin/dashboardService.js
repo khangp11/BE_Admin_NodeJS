@@ -103,11 +103,8 @@ const dashboardService = {
                 created_at: currentDate
             }
             const news = await DB('news').insert(newData).returning("id");
-
             const newsID = news[0];
-
             const dataCat = data.obj_cat;
-
             for (let item of dataCat) {
                 const catData = {
                     company_id: data.company_id,
@@ -116,9 +113,7 @@ const dashboardService = {
                 };
                 const news_cat = await DB('news_categories').insert(catData).returning('*');
             }
-
             const new_lang = data.obj_news_lang;
-
             for (let item of new_lang) {
                 const new_lang_Data = {
                     company_id: item.company_id,
