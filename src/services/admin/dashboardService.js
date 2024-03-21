@@ -244,8 +244,8 @@ const dashboardService = {
     allnews: async (req, rep) => {
         try {
             const reponse = await DB("news").count('* as total');
-            return {
-                data: reponse[0].total
+            return data = {
+                trend: reponse[0].total
             }
         } catch (error) {
             console.error("Error in allnews function of dashboardService:", error);
@@ -255,8 +255,8 @@ const dashboardService = {
     allusers: async (req, rep) => {
         try {
             const reponse = await DB("users").count('* as total');
-            return {
-                data: reponse[0].total
+            return data = {
+                trend: reponse[0].total
             }
         } catch (error) {
             console.error("Error in allUsers function of dashboardService:", error);

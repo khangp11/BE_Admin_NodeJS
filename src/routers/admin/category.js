@@ -1,8 +1,8 @@
 const categoryController = require('../../controllers/admin/categoryController');
 const router = require("express").Router();
-const checkPermission = require("../../Middleware/permissionsMiddleware");
+// const checkPermission = require("../../Middleware/permissionsMiddleware");
 
-router.use(checkPermission('1'));
+// router.use(checkPermission('1'));
 
 router.get('/', categoryController.FindAll);
 router.post('/search', categoryController.SearchName);

@@ -22,7 +22,7 @@ const cloudinaryService = {
                     } else {
                         const url = `${STATIC_URL}/files/${company_id}/${user_id}/${year}/${month}/${day}`;
                         console.log(url);
-                        resolve({ secure_url: result.secure_url });
+                        resolve(result.secure_url);
                     }
                 }
             );

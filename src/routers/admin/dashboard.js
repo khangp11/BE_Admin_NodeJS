@@ -1,19 +1,19 @@
 const dashboardController = require('../../controllers/admin/dashboardController');
 const router = require("express").Router();
 
-const checkPermission = require("../../Middleware/permissionsMiddleware");
+// const checkPermission = require("../../Middleware/permissionsMiddleware");
 
-router.use(checkPermission('1'));
+// router.use(checkPermission('1'));
 
 
 router.get('/dashboard/', dashboardController.FindAll);
-router.get('/news/', dashboardController.FindAll);
-router.get('/news/:id', dashboardController.FindById);
-router.patch('/news/:id', dashboardController.Update);
-router.post('/news', dashboardController.Create);
-router.delete('/news/:id', dashboardController.Delete);
-router.post('/news/search', dashboardController.Search);
-router.post('/news/totalpost/', dashboardController.CalculateTotalPosts);
+router.get('/products/', dashboardController.FindAll);
+router.get('/products/:id', dashboardController.FindById);
+router.patch('/products/:id', dashboardController.Update);
+router.post('/products', dashboardController.Create);
+router.delete('/products/:id', dashboardController.Delete);
+router.post('/products/search', dashboardController.Search);
+router.post('/products/totalpost/', dashboardController.CalculateTotalPosts);
 // thống kê
 router.get('/allnews/', dashboardController.AllNews);
 router.get('/allusers/', dashboardController.AllUsers);

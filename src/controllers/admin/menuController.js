@@ -54,6 +54,18 @@ const menuController = {
             console.error("Error in Update function of menuController:", error);
             res.status(500).json({ error: 'Internal server error' });
         }
+    },
+    updateStatus: async (req, res) => {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+            const updateStatus = await menuService.updateStatus(id, data);
+            res.json(updateStatus);
+        } catch (error) {
+            console.error("error in update status menus", error);
+            res.status(500).json({ error: "internal serrver error" })
+        }
+
     }
 };
 

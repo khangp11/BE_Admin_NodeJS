@@ -5,6 +5,7 @@ const app = express();
 const port = process.env.PORT;
 const hostname = process.env.HOST_NAME;
 
+
 const authRouter = require("./src/routers/authen/auth");
 const userRouter = require("./src/routers/admin/user");
 const categoryRouter = require("./src/routers/admin/category");
@@ -29,14 +30,15 @@ app.use(
 );
 
 app.use('/api/', authRouter);
-app.use('/api/users', checkPermission('1'), userRouter);
-app.use('/api/category', categoryRouter);
+app.use('/api/users', userRouter);
+app.use('/api/categories', categoryRouter);
 app.use('/api', dashboardRouter);
 app.use('/api/menu', menuRouter);
 app.use('/api/lang', langsRouter);
 app.use('/api/site', siteRouter);
 app.use('/api/slide', slideShowRouter);
 app.use('/api/media', uploadRouter);
+
 
 
 app.listen(port, hostname, () => {

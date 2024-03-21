@@ -5,7 +5,7 @@ const categoryService = {
         try {
             const categories = await DB('categories')
                 .join('categories_lang', 'categories.id', '=', 'categories_lang.cat_id')
-                .whereIn('categories_lang.lang_id', [1, 2]) // Chỉ lấy dữ liệu cho hai ngôn ngữ: tiếng Việt (1) và tiếng Anh (2)
+                .whereIn('categories_lang.lang_id', [1, 2])
                 .select(
                     'categories.id',
                     'categories.parent_id',
