@@ -15,6 +15,9 @@ const langsRouter = require("./src/routers/admin/langs");
 const siteRouter = require("./src/routers/admin/site");
 const slideShowRouter = require("./src/routers/admin/slideShow");
 const uploadRouter = require("./src/routers/upload");
+const listmenuRouter = require("./src/routers/admin/listmenu");
+
+
 
 const checkPermission = require("./src/Middleware/permissionsMiddleware");
 
@@ -33,12 +36,12 @@ app.use('/api/', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api', dashboardRouter);
-app.use('/api/menu', menuRouter);
+app.use('/api', menuRouter);
 app.use('/api/lang', langsRouter);
 app.use('/api/site', siteRouter);
-app.use('/api/slide', slideShowRouter);
+app.use('/api/slideshow', slideShowRouter);
 app.use('/api/media', uploadRouter);
-
+app.use('/api', listmenuRouter);
 
 
 app.listen(port, hostname, () => {

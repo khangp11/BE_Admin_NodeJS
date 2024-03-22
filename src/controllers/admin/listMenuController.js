@@ -1,9 +1,9 @@
-const menuService = require('../../services/admin/menuService');
+const listmenuService = require('../../services/admin/listmenuService');
 
 const menuController = {
     FindAll: async (req, res) => {
         try {
-            const menus = await menuService.findAll();
+            const menus = await listmenuService.findAll();
             res.json(menus);
         } catch (error) {
             console.error("Error in FindAll function of menuController:", error);
@@ -13,20 +13,7 @@ const menuController = {
     FindById: async (req, res) => {
         try {
             const id = req.params.id;
-            const menu = await menuService.findById(id);
-            if (!menu) {
-                return res.status(404).json({ error: 'Menu not found' });
-            }
-            res.json(menu);
-        } catch (error) {
-            console.error("Error in FindById function of menuController:", error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    },
-    FindByIdListMenu: async (req, res) => {
-        try {
-            const id = req.params.id;
-            const menu = await menuService.FindByIdListMenu(id);
+            const menu = await listmenuService.findById(id);
             if (!menu) {
                 return res.status(404).json({ error: 'Menu not found' });
             }
@@ -40,7 +27,7 @@ const menuController = {
         try {
             const data = req.body;
             console.log(data);
-            const newMenu = await menuService.create(data);
+            const newMenu = await listmenuService.create(data);
             res.status(201).json(newMenu);
         } catch (error) {
             console.error("Error in Create function of menuController:", error);
@@ -50,7 +37,7 @@ const menuController = {
     Delete: async (req, res) => {
         try {
             const id = req.params.id;
-            const result = await menuService.delete(id);
+            const result = await listmenuService.delete(id);
             res.status(204).send();
         } catch (error) {
             console.error("Error in Delete function of menuController:", error);
@@ -61,7 +48,7 @@ const menuController = {
         try {
             const id = req.params.id;
             const data = req.body;
-            const updatedMenu = await menuService.update(id, data);
+            const updatedMenu = await listmenuService.update(id, data);
             res.json(updatedMenu);
         } catch (error) {
             console.error("Error in Update function of menuController:", error);
@@ -72,7 +59,7 @@ const menuController = {
         try {
             const id = req.params.id;
             const data = req.body;
-            const updateStatus = await menuService.updateStatus(id, data);
+            const updateStatus = await listmenuService.updateStatus(id, data);
             res.json(updateStatus);
         } catch (error) {
             console.error("error in update status menus", error);
@@ -80,14 +67,6 @@ const menuController = {
         }
 
     },
-    allListMenu: async (req, res) => {
-        try {
-            const listMenu = await menuService.allListMenu();
-            res.json(listMenu)
-        } catch (error) {
-
-        }
-    }
 };
 
 module.exports = menuController;

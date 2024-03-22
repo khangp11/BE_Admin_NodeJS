@@ -14,10 +14,7 @@ const slideShowController = {
         try {
             const id = req.params.id;
             const slideShow = await slideShowService.findById(id);
-            if (!slideShow) {
-                return res.status(404).json({ error: 'User not found' });
-            }
-            res.json(user);
+            res.json(slideShow);
         } catch (error) {
             console.error("Error in FindById function of slideShowController:", error);
             res.status(500).json({ error: 'Internal server error' });
