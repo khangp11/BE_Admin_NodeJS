@@ -12,7 +12,6 @@ const slideShowService = {
     },
     findById: async (id) => {
         try {
-            console.log(id);
             const data = await DB('slideshow').where('id', id).first();
             return data;
         } catch (error) {
