@@ -12,7 +12,9 @@ const langsController = {
     },
     FindById: async (req, res) => {
         try {
-            const lang = await langsService.findById(req.params.id);
+            const start = req.query._start;
+            const end = req.query._end;
+            const lang = await langsService.findById(req.params.id, start, end);
             if (!lang) {
                 return res.status(404).json({ error: 'Language not found' });
             }

@@ -1,15 +1,26 @@
 const DB = require('../../configs/database');
 
 const slideShowService = {
-    findAll: async () => {
+    findAll: async (status, title, start, end) => {
         try {
-            const data = await DB('slideshow');
-            return data;
+            let data = DB('slideshow').limit(start).offset(end);
+
+            if (status) {
+                data = data.where('slideshow.status', status);
+            }
+            if (title) {
+                data = data.where('slideshow.name', 'like', `%${title}%`);
+            }
+
+            const result = await data;
+
+            return result;
         } catch (error) {
             console.error("Error in findAll:", error);
             throw error;
         }
     },
+
     findById: async (id) => {
         try {
             const data = await DB('slideshow').where('id', id).first();
@@ -32,7 +43,7 @@ const slideShowService = {
     delete: async (id) => {
         try {
             const result = await DB('slideshow').where('id', id).del();
-            return data;
+            return result;
         } catch (error) {
             console.error("Error in delete:", error);
             throw error;

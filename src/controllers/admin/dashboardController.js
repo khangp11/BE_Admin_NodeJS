@@ -4,7 +4,12 @@ const dashboardService = require('../../services/admin/dashboardService');
 const dashboardController = {
     FindAll: async (req, res) => {
         try {
-            const dashboards = await dashboardService.findAll();
+            const start = req.params._start;
+            const end = req.params._end;
+            const status = req.body.status;
+            const q = req.query.q;
+            const cat_id = req.body.cat_id;
+            const dashboards = await dashboardService.findAll(status, cat_id, q, start, end);
             res.json(dashboards);
         } catch (error) {
             console.error("Error in FindAll function of dashboardController:", error);

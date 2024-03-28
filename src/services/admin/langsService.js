@@ -1,9 +1,9 @@
 const DB = require('../../configs/database');
 
 const langsService = {
-    findAll: async () => {
+    findAll: async (start, end) => {
         try {
-            const data = await DB('languages');
+            const data = await DB('languages').limit(start).offset(end);
             return data;
         } catch (error) {
             console.error("Error in findAll:", error);

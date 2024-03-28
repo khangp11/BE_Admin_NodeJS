@@ -1,10 +1,21 @@
 const DB = require('../../configs/database');
 
 const userService = {
-    findAll: async () => {
+    findAll: async (infor, role, start, end) => {
         try {
-            const data = await DB('users');
-            return data;
+            const query = DB('users')
+            if (role) {
+                query.where('role_id', role)
+            }
+            if (infor) {
+                query.where(function () {
+                    this.whereILike('users.fullname', `%${infor}%`)
+                        .orWhereILike('users.username', `%${infor}%`)
+                        .orWhereILike('users.id', `%${infor}%`)
+                        .orWhereILike('users.email', `%${infor}%`);
+                })
+            }
+            return query;
         } catch (error) {
             console.error("Error in findAll:", error);
             throw error;

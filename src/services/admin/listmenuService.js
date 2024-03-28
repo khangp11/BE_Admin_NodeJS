@@ -1,18 +1,22 @@
 const DB = require('../../configs/database');
 
 const menuService = {
-    findAll: async () => {
+    findAll: async (name, start, end) => {
         try {
-            const result = await DB('menus')
-                .select(
-                    'menus.id',
-                    'menus.name',
-                    'menus.sort_order',
-                    'menus.status',
-                    'menu_type.name as menu_type_name',
-                    'categories_lang1.name as name_category1',
-                    'categories_lang2.name as name_category2'
-                )
+            let result = DB('menus').limit(start).offset(end);
+
+            if (name != null) {
+                result = result.where('menus.name', 'like', `%${name}%`);
+            }
+            result = await result.select(
+                'menus.id',
+                'menus.name',
+                'menus.sort_order',
+                'menus.status',
+                'menu_type.name as menu_type_name',
+                'categories_lang1.name as name_category1',
+                'categories_lang2.name as name_category2'
+            )
                 .leftJoin('categories_lang as categories_lang1', 'menus.cat_right', 'categories_lang1.cat_id')
                 .leftJoin('categories_lang as categories_lang2', 'menus.cat_right2', 'categories_lang2.cat_id')
                 .leftJoin('menu_type', 'menus.type', 'menu_type.id');
@@ -22,6 +26,7 @@ const menuService = {
             throw error;
         }
     },
+
     findById: async (id) => {
         try {
             const data = await DB('menus').where('id', id).first();

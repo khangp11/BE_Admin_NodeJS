@@ -3,7 +3,9 @@ const menuService = require('../../services/admin/menuService');
 const menuController = {
     FindAll: async (req, res) => {
         try {
-            const menus = await menuService.findAll();
+            const start = req.params._start;
+            const end = req.params._end;
+            const menus = await menuService.findAll(start, end);
             res.json(menus);
         } catch (error) {
             console.error("Error in FindAll function of menuController:", error);

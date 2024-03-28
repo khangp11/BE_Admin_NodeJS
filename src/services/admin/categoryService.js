@@ -1,11 +1,25 @@
 const DB = require('../../configs/database');
+
 const currentDate = new Date();
+
 const categoryService = {
-    findAll: async () => {
+    findAll: async (options, start, end) => {
         try {
-            const categories = await DB('categories')
+            if (!options) {
+                throw new Error('Options are required for findAll.');
+            }
+            const { status, title } = options;
+            let query = DB('categories').limit(end).offset(start)
                 .join('categories_lang', 'categories.id', '=', 'categories_lang.cat_id')
-                .whereIn('categories_lang.lang_id', [1, 2])
+                .whereIn('categories_lang.lang_id', [1, 2]);
+            if (status) {
+                query.where('categories.status', status);
+            }
+
+            if (title) {
+                query.where('categories_lang.name', 'like', `%${title}%`);
+            }
+            const categories = await query
                 .select(
                     'categories.id',
                     'categories.parent_id',
@@ -37,10 +51,12 @@ const categoryService = {
                 description_en: category.description_en
             }));
         } catch (error) {
-            console.error('Error fetching Vietnamese news categories:', error);
+            console.error('Error fetching news categories:', error);
             return [];
         }
     },
+
+
 
     findById: async (ID) => {
         try {

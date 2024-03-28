@@ -3,7 +3,11 @@ const userService = require('../../services/admin/userService');
 const userController = {
     FindAll: async (req, res) => {
         try {
-            const users = await userService.findAll();
+            const infor = req.body.infor;
+            const role = req.body.role;
+            const start = req.query._start;
+            const end = req.query._end;
+            const users = await userService.findAll(infor, role, start, end);
             res.json(users);
         } catch (error) {
             console.error("Error in FindAll function of userController:", error);

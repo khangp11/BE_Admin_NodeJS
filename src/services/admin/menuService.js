@@ -1,9 +1,9 @@
 const DB = require('../../configs/database');
 
 const menuService = {
-    findAll: async () => {
+    findAll: async (start, end) => {
         try {
-            const data = await DB('menu_type');
+            const data = await DB('menu_type').limit(end).offset(start);
             return data;
         } catch (error) {
             console.error("Error in findAll:", error);

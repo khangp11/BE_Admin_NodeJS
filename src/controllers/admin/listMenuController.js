@@ -3,7 +3,10 @@ const listmenuService = require('../../services/admin/listmenuService');
 const menuController = {
     FindAll: async (req, res) => {
         try {
-            const menus = await listmenuService.findAll();
+            const name = req.body.name;
+            const start = req.query._start;
+            const end = req.query._end;
+            const menus = await listmenuService.findAll(name, start, end);
             res.json(menus);
         } catch (error) {
             console.error("Error in FindAll function of menuController:", error);

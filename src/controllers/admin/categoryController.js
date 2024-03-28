@@ -4,8 +4,18 @@ const currentDate = new Date();
 const categoryController = {
     FindAll: async (req, res) => {
         try {
-            const categories = await categoryService.findAll();
+            const status = req.body.status;
+            const title = req.body.title;
+            const start = req.query._start;
+            const end = req.query._end;
+            const categories = await categoryService.findAll({ status: status, title: title }, start, end);
+
+            res.set('Access-Control-Allow-Credentials', true);
+            res.set('Access-Control-Expose-Headers', 'X-Total-Count');
+            res.set('X-Total-Count', 100);
+
             res.json(categories);
+
         } catch (error) {
             console.error("Error finding categories:", error);
             res.status(500).json({ error: "Internal Server Error" });

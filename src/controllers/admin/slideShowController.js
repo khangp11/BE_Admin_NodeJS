@@ -3,7 +3,11 @@ const slideShowService = require('../../services/admin/slideShowService');
 const slideShowController = {
     FindAll: async (req, res) => {
         try {
-            const slideShow = await slideShowService.findAll();
+            const status = req.body.status;
+            const title = req.body.title;
+            const start = req.query._start;
+            const end = req.query._end;
+            const slideShow = await slideShowService.findAll(status, title, start, end);
             res.json(slideShow);
         } catch (error) {
             console.error("Error in FindAll function of slideShowController:", error);

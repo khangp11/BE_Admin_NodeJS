@@ -5,10 +5,10 @@ const router = require("express").Router();
 // router.use(checkPermission('1'));
 
 router.get('/', categoryController.FindAll);
-router.post('/search', categoryController.SearchName);
+// router.post('/search', categoryController.SearchName);
 router.get('/:id', categoryController.FindById);
 router.patch('/:id', categoryController.Update);
 router.post('/', categoryController.Create);
 router.delete('/:id', categoryController.Delete);
-
+router.post('/search', categoryController.FindAll);
 module.exports = router;

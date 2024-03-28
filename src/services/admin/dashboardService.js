@@ -1,29 +1,41 @@
 const DB = require('../../configs/database');
 const currentDate = new Date();
 const dashboardService = {
-    findAll: async (request) => {
+    findAll: async (status, cat_id, q, start, end) => {
         try {
             const query = DB('news')
+                .limit(end).offset(start)
                 .innerJoin('news_lang', 'news.id', '=', 'news_lang.news_id')
                 .innerJoin('news_categories', 'news.id', '=', 'news_categories.news_id')
                 .leftJoin('categories_lang', function () {
                     this.on('news_categories.cat_id', '=', 'categories_lang.cat_id')
                         .andOn('categories_lang.lang_id', '=', 1);
                 })
-                .select(
-                    'news.id',
-                    'news.image',
-                    'news.status',
-                    'news.sort_order',
-                    DB.raw('MAX(news_lang.name) as name'),
-                    DB.raw('MAX(news_lang.description) as description'),
-                    DB.raw('MAX(news_lang.content) as content'),
-                    DB.raw('MAX(news_lang.meta_description) as meta_description'),
-                    DB.raw('GROUP_CONCAT(DISTINCT news_categories.cat_id) as category_id'),
-                    DB.raw('GROUP_CONCAT(DISTINCT categories_lang.name) as name_category')
-                )
+
+            if (status) {
+                query.where('news.status', status);
+            }
+            if (cat_id) {
+                query.where('news_categories.cat_id', cat_id);
+            }
+            if (q) {
+                query.where('news_lang.name', 'like', `%${q}%`);
+            }
+            query.select(
+                'news.id',
+                'news.image',
+                'news.status',
+                'news.sort_order',
+                DB.raw('MAX(news_lang.name) as name'),
+                DB.raw('MAX(news_lang.description) as description'),
+                DB.raw('MAX(news_lang.content) as content'),
+                DB.raw('MAX(news_lang.meta_description) as meta_description'),
+                DB.raw('GROUP_CONCAT(DISTINCT news_categories.cat_id) as category_id'),
+                DB.raw('GROUP_CONCAT(DISTINCT categories_lang.name) as name_category')
+            )
                 .groupBy('news.id')
                 .orderBy('news.id', 'desc');
+
             const newsWithLangAndCategories = await query;
             return newsWithLangAndCategories;
         } catch (error) {
@@ -31,6 +43,7 @@ const dashboardService = {
             throw error;
         }
     },
+
     findById: async (id) => {
         try {
             const data = await DB('news')
