@@ -15,7 +15,6 @@ const categoryService = {
             if (status) {
                 query.where('categories.status', status);
             }
-
             if (title) {
                 query.where('categories_lang.name', 'like', `%${title}%`);
             }

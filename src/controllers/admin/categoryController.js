@@ -9,7 +9,6 @@ const categoryController = {
             const start = req.query._start;
             const end = req.query._end;
             const categories = await categoryService.findAll({ status: status, title: title }, start, end);
-
             res.set('Access-Control-Allow-Credentials', true);
             res.set('Access-Control-Expose-Headers', 'X-Total-Count');
             res.set('X-Total-Count', 100);
